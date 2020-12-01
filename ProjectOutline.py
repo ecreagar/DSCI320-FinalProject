@@ -34,7 +34,7 @@ def plotProblem(points, duration):
 
 def distance(point1, point2):
 	'''
-	Takes two points and returns the distance between them  # noqa: W191
+	Takes two points and returns the distance between them
 	'''
 	return np.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
 
