@@ -24,7 +24,8 @@ def plotProblem(points, duration):
 	plt.plot(x, x-25*np.sqrt(2), linestyle='--', color="darkred")
 
 	if (points != None):
-		plt.plot([i[0] for i in points], [j[1] for j in points], linestyle=":", label = str(duration)+"Days")
+		plt.plot([i[0] for i in points], [j[1] for j in points], linestyle=":", label = str(duration)+" Days")
+		plt.scatter([i[0] for i in points], [j[1] for j in points])
 	plt.legend()
 	plt.xlim([-2,102])
 	plt.ylim([0,100])
