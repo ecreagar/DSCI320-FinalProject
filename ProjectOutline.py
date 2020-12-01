@@ -55,6 +55,7 @@ def createPoints(x2,x3,x4,x5,x6,x7):
 def tripDuration(points):
 	duration = 0
 	for i in range(len(points)-1):
+		print("points:",points[i],points[i+1],"\ndist:",distance(points[i],points[i+1]),"\nSpeed",speeds[i%6])
 		duration += distance(points[i],points[i+1])/speeds[i%6]
 
 	return duration
