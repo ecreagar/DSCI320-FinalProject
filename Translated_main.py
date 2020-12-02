@@ -22,11 +22,12 @@ def get_points(Ys):
 
     return np.array(ret)
 
-# y incrament for line from A to B
+# y increment for line from A to B
 y_inc = 25*(sqrt(2)-1)
 # Starting ys (straight line from A to B) -> slope = 1
 ys_start = [y_inc+10*i for i in range(6)]
 # Starting points
+### obj_func(points_start) should be 13.4738 ###
 points_start = get_points(ys_start)
 
 # Take the distance between each point and divide it by the speed in that region
@@ -119,7 +120,7 @@ class Descent():
         return (end+start)/2
 
 
-# Run the algorithm and get approite data
+# Run the algorithm and get appropriate data
 ################################################################################
 # Correct answer = 13.1265108586
 def main(ERR=1e-7):
