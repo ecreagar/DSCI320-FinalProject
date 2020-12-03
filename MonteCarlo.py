@@ -10,12 +10,16 @@ speeds = [10, 9, 8, 7, 6, 5]
 
 
 def plotProblem(points, duration):
+
+	# Plot points A and B
 	A = [0,50]
 	B = [100,50]
 	plt.scatter(A[0], A[1], color="blue")
 	plt.text(A[0]+1,A[1]+1,"A")
 	plt.scatter(B[0], B[1], color='blue')
 	plt.text(B[0]+1,B[1]+1,"B")
+
+	#plot the lines in the marsh
 	x = np.linspace(0,100,1000)
 	plt.plot(x, x+25*np.sqrt(2), linestyle='--', color="yellow")
 	plt.plot(x, x+15*np.sqrt(2), linestyle='--', color="orange")
@@ -24,6 +28,7 @@ def plotProblem(points, duration):
 	plt.plot(x, x-15*np.sqrt(2), linestyle='--', color="red")
 	plt.plot(x, x-25*np.sqrt(2), linestyle='--', color="darkred")
 
+	# Plot the points that Frodo and Sam walk through
 	if (points != None):
 		plt.plot([i[0] for i in points], [j[1] for j in points], linestyle=":", 
 			label = str(duration)+" Days")
@@ -43,6 +48,10 @@ def distance(point1, point2):
 
 
 def createPoints(x2,x3,x4,x5,x6,x7):
+	'''
+	Given the x values for our points, return the corresponding X,Y pairs
+	which lie on the lines through the swamp
+	'''
 	point1 = [0,50]
 	point8 = [100,50]
 	point2 = [x2, x2+25*np.sqrt(2)]
@@ -79,8 +88,6 @@ def MonteCarlo(points,iterations):
 		# and calculate the trip duration at these new points
 		pointsNew = []
 		for i in points:
-			# Change - 12/2: added the *(2/i) factor to create a 
-			# simulated annealing style method
 			pointsNew.append(i + (np.random.rand()-0.5)*(4))
 		route = createPoints(pointsNew[0], pointsNew[1], pointsNew[2],
 			pointsNew[3], pointsNew[4], pointsNew[5])
@@ -118,10 +125,8 @@ def Annealing(points,iterations):
 	durations = [duration0]
 	# Use a T value of 10 to limit amount of random steps taken
 	T = 10
-	# TODO: Use simulated annealing to allow us to shrink the variability and
-	# be more precise?
 	for i in range(iterations):
-		# add randomness between -2 and 2 to points
+		# add randomness between -2 and 2 to points at first
 		# and calculate the trip duration at these new points
 		pointsNew = []
 		for i in points:
