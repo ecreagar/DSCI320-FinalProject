@@ -4,6 +4,7 @@
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
 
 
 speeds = [10, 9, 8, 7, 6, 5]
@@ -72,13 +73,14 @@ def tripDuration(points):
 	return duration
 
 
-def MonteCarlo(points,iterations):
+def MonteCarlo(points,iterations,hist = False):
 	# Start with point of straight line through the problem
 	duration0 = tripDuration(createPoints(points[0],points[1],points[2],points[3],points[4],
 			points[5]))
 	minDuration = duration0
 	bestPoints = points
 	durations = [duration0]
+	pointsHist = []
 	# Use a T value of 10 to limit amount of random steps taken
 	T = 10
 	# TODO: Use simulated annealing to allow us to shrink the variability and
@@ -87,8 +89,8 @@ def MonteCarlo(points,iterations):
 		# add randomness between -2 and 2 to points
 		# and calculate the trip duration at these new points
 		pointsNew = []
-		for i in points:
-			pointsNew.append(i + (np.random.rand()-0.5)*(4))
+		for point in points:
+			pointsNew.append(point + (np.random.rand()-0.5)*(4))
 		route = createPoints(pointsNew[0], pointsNew[1], pointsNew[2],
 			pointsNew[3], pointsNew[4], pointsNew[5])
 		duration = tripDuration(route)
@@ -100,12 +102,14 @@ def MonteCarlo(points,iterations):
 			# points
 			minDuration = duration
 			points = pointsNew.copy()
+			pointsHist.append(points)
 		else:
 			# if not, accept the new point with a small probability
 			s = np.random.rand()
 			if((np.exp(-1*(duration - minDuration)/T)) <= s):
 				minDuration = duration
 				points = pointsNew.copy()
+				pointsHist.append(points)
 
 
 	plt.plot(durations)
@@ -113,6 +117,9 @@ def MonteCarlo(points,iterations):
 	plt.ylabel("Trip Duration (Days)")
 	plt.show()
 
+	# If we want the history of the points (For GIFs) return that too (so as not to break old code).
+	if hist:
+		return points,minDuration,pointsHist
 	return points,minDuration
 
 
@@ -129,10 +136,10 @@ def Annealing(points,iterations):
 		# add randomness between -2 and 2 to points at first
 		# and calculate the trip duration at these new points
 		pointsNew = []
-		for i in points:
+		for point in points:
 			# Change - 12/2: added the *(2/i) factor to create a 
 			# simulated annealing style method
-			pointsNew.append(i + (np.random.rand()-0.5)*(4)*(2/i))
+			pointsNew.append(point + (np.random.rand()-0.5)*(4)*(2/i))
 		route = createPoints(pointsNew[0], pointsNew[1], pointsNew[2],
 			pointsNew[3], pointsNew[4], pointsNew[5])
 		duration = tripDuration(route)
@@ -189,12 +196,12 @@ def main():
 	duration = tripDuration(direct)
 
 	# Plot the original problem
-	plotProblem(direct,duration)
+	# plotProblem(direct,duration)
 
 
-	# RunMonteCarlo(directxs,iterations=100000)
+	RunMonteCarlo(directxs,iterations=100000)
 	
-	RunSimulatedAnnealing(directxs,iterations=1000)
+	# RunSimulatedAnnealing(directxs,iterations=1000)
 
 	pass
 
