@@ -35,7 +35,7 @@ def plotProblem(points, duration):
 			label = str(duration)+" Days")
 		plt.scatter([i[0] for i in points], [j[1] for j in points])
 	plt.legend()
-	plt.title("Frodo and Sam's best path to point B")
+	plt.title("Frodo and Sam's path to point B")
 	plt.xlim([-2,102])
 	plt.ylim([0,100])
 	plt.show()
@@ -81,6 +81,7 @@ def MonteCarlo(points,iterations,hist = False):
 	bestPoints = points
 	durations = [duration0]
 	pointsHist = []
+	distHist = []
 	# Use a T value of 10 to limit amount of random steps taken
 	T = 10
 	# TODO: Use simulated annealing to allow us to shrink the variability and
@@ -102,24 +103,26 @@ def MonteCarlo(points,iterations,hist = False):
 			# points
 			minDuration = duration
 			points = pointsNew.copy()
-			pointsHist.append(points)
+			pointsHist.append(route)
+			distHist.append(duration)
 		else:
 			# if not, accept the new point with a small probability
 			s = np.random.rand()
 			if((np.exp(-1*(duration - minDuration)/T)) <= s):
 				minDuration = duration
 				points = pointsNew.copy()
-				pointsHist.append(points)
+				pointsHist.append(route)
+				distHist.append(duration)
 
 
-	plt.plot(durations)
+	"""plt.plot(durations)
 	plt.title("Trip Duration by Iteration")
 	plt.ylabel("Trip Duration (Days)")
-	plt.show()
+	plt.show()"""
 
 	# If we want the history of the points (For GIFs) return that too (so as not to break old code).
 	if hist:
-		return points,minDuration,pointsHist
+		return [pointsHist,distHist]
 	return points,minDuration
 
 
@@ -167,6 +170,23 @@ def Annealing(points,iterations):
 	return points,minDuration
 
 
+def makeGif(points, iterations):
+	MC_hist = MonteCarlo(points, iterations, hist = True)
+
+	#for i in range(5): plotProblem(MC_hist[i], MC_duration[i])
+	
+	fig, ax = plt.subplots()
+	ani = FuncAnimation(fig, plotGif, MC_hist)
+	plt.show()
+	writer = PillowWriter(fps = 1)
+	ani.save("animation.gif", writer = writer)
+
+def plotGif(histDur):
+	hist = histDur[0]
+	dur = histDur[1]
+	plotProblem(hist, dur)
+
+
 def RunMonteCarlo(points,iterations):
 	MC_points,MC_duration = MonteCarlo(points,iterations)
 	MC_route = createPoints(MC_points[0],MC_points[1],MC_points[2],MC_points[3],
@@ -199,9 +219,11 @@ def main():
 	# plotProblem(direct,duration)
 
 
-	RunMonteCarlo(directxs,iterations=100000)
+	#RunMonteCarlo(directxs,iterations=100000)
 	
 	# RunSimulatedAnnealing(directxs,iterations=1000)
+
+	makeGif(directxs, iterations = 10)
 
 	pass
 
