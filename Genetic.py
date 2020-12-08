@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -10,7 +9,7 @@ speeds = [10, 9, 8, 7, 6, 5]
 
 
 def plotProblem(points, duration, *args, **kwargs):
-    title = kwargs.get('title',None)
+    title = kwargs.get('title', None)
     # Plot points A and B
     A = [0, 50]
     B = [100, 50]
@@ -158,7 +157,7 @@ def mutate(children, genSize, randomness):
         tempChild = children[rand][1:-1]
         # Amount of randomness varies with randomness param. if
         # randomness is 1, the value added is rand between -1 and 1
-        randomXs = [(tempChild[j][0] + ((np.random.rand()-0.5)*2)*
+        randomXs = [(tempChild[j][0] + ((np.random.rand()-0.5) * 2) *
                     randomness) for j in range(len(tempChild))]
         individuals.append(createPoints(randomXs))
 
@@ -178,42 +177,51 @@ def runGenetic(genSize, numGenerations):
 
     minDuration = 1000
     topDog = []
+    durationsOverTime = []
     # 2-4
     for i in range(numGenerations):
     # sorts the individuals and gives us a list of durations for plotting or
     # whatever
         durations = sortByFitness(individuals)
-
+        durationsOverTime.append(durations[0])
         if(durations[0] < minDuration):
             minDuration = durations[0]
             topDog = individuals[0]
 
-        # plotProblem(individuals[0],durations[0])
         children = mate(individuals)
-        individuals = mutate(children, genSize=genSize, randomness=1)
 
-    return topDog, minDuration
+        individuals = mutate(children, genSize=genSize, randomness=(10/(i+1)))
+
+        if(np.abs(minDuration - 13.1265) < .0001):
+            break
+
+    plt.plot(durationsOverTime)
+    plt.title("Trip Duration by Iteration")
+    plt.ylabel("Trip Duration (Days)")
+    plt.show()
+    return topDog, minDuration, i
 
 
 def main():
-    '''
+
     # Show the original problem with a straght line
     starting = (100-5*(10*np.sqrt(2)))/2
     step = 10*np.sqrt(2)
 
     # create the steps for the original, straght line problem
     direct = createPoints([starting, starting+step, starting+step*2,
-        starting+step*3, starting+step*4, starting+step*5])
+                           starting+step*3, starting+step*4, starting+step*5])
     print("Direct Route: ", tripDuration(direct), "days")
     duration = tripDuration(direct)
 
     # Plot the original problem
     plotProblem(direct, duration)
-    '''
-    bestPath, bestTime = runGenetic(genSize=100, numGenerations=100)
+    
+    bestPath, bestTime, numGens = runGenetic(genSize=100, numGenerations=100)
 
     plotProblem(bestPath, bestTime, title="Genetic Algorithm - Frodo and Sam's best path")
-
+    print("Genetic Algorithm: ", bestTime, "days")
+    print("Converged in: ", numGens, "generations")
     pass
 
 
