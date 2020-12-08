@@ -147,7 +147,7 @@ def Annealing(points,iterations):
 		else:
 			# if not, accept the new point with a small probability
 			s = np.random.rand()
-			if((np.exp(-1*(duration - minDuration)/T)) <= s):
+			if((np.exp(-1*(duration - minDuration)/(1/T*i))) <= s):
 				minDuration = duration
 				points = pointsNew.copy()
 
@@ -176,6 +176,7 @@ def RunSimulatedAnnealing(points,iterations):
 
 
 def main():
+	
 	# Show the original problem with a straght line
 	starting = (100-5*(10*np.sqrt(2)))/2
 	step = 10*np.sqrt(2)
@@ -190,11 +191,13 @@ def main():
 
 	# Plot the original problem
 	plotProblem(direct,duration)
+	
 
-
-	# RunMonteCarlo(directxs,iterations=100000)
+	#RunMonteCarlo(directxs,iterations=100000)
 	
 	RunSimulatedAnnealing(directxs,iterations=1000)
+	#RunSimulatedAnnealing(directxs,iterations=10000)
+	#RunSimulatedAnnealing(directxs,iterations=100000)
 
 	pass
 
