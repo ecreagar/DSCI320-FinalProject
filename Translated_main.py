@@ -136,7 +136,47 @@ def main(ERR=1e-7):
 
     return SGD
 
+# Plot the solution
+################################################################################
+from matplotlib.colors import is_color_like, to_hex
 
+colors = ['black', 'yellow', 'orange', 'orangered', 'orangered', 'red', 'darkred', 'black']
+
+def plot():
+    model = main()
+
+    points = model.x_ks[-1]
+
+    for i in range(points.shape[0]-1):
+        # Get the two points
+        x_0, x_1 = points[i, 0], points[i+1, 0]
+        y_0, y_1 = points[i, 1], points[i+1, 1]
+
+        # xs for the line
+        xs = np.linspace(x_0, x_1)
+
+        # get m and b for line eq
+        m = (y_1-y_0)/(x_1-x_0)
+        b = y_1-m*x_1
+
+        # Get the ys based on the line eq
+        ys = np.array([m*x+b for x in xs])
+
+        # Plot the line between (x_0, y_0) and (x_1, y_1)
+        plt.plot(xs, ys, linestyle=':', color='blue')
+
+        # The ys for the vertical line at x_0
+        ys_line = np.linspace(0,50*sqrt(2))
+
+        if i != 0:
+            plt.plot([x_0]*ys_line.shape[0], ys_line, linestyle='--', color=colors[i])
+
+    # Plot the "turning points"
+    plt.scatter(points[:,0], points[:,1])
+    
+    plt.legend()
+    plt.title("Frodo and Sam's best path to point B")
+    plt.show()
 
 
 
