@@ -42,7 +42,7 @@ def distance(point1, point2):
 def createPoints(x2,x3,x4,x5,x6,x7):
 	point1 = [0,50]
 	point8 = [100,50]
-	point2 = [x2, x2+25*np.sqrt(2)]
+	point2 = [x2, x2+25*np.sqrt(2)] # 25*sqrt(2) = 35.355
 	point3 = [x3, x3+15*np.sqrt(2)]
 	point4 = [x4, x4+5*np.sqrt(2)]
 	point5 = [x5, x5-5*np.sqrt(2)]
